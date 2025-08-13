@@ -1,0 +1,17 @@
+django>=5
+django-htmx
+django-allauth
+django-guardian
+django-storages[boto3]
+dj-database-url
+psycopg[binary]
+celery[redis]
+flower
+Pillow
+piexif
+imagehash
+meilisearch
+gunicorn
+uvicorn
+python-dotenv
+sentry-sdk
