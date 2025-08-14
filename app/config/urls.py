@@ -17,8 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.http import HttpResponse
+from django.contrib.auth.views import LogoutView
+
+from users.views import CustomLoginView, RegisterView, home
 
 urlpatterns = [
     path('healthz', lambda r: HttpResponse('ok')),
     path('admin/', admin.site.urls),
+    path('', CustomLoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    path('register/<uuid:token>/', RegisterView.as_view(), name='register'),
+    path('home/', home, name='home'),
 ]
