@@ -12,17 +12,20 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Set image tag
         id: meta
         run: |
           echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
           echo "TAG=${GITHUB_SHA}" >> $GITHUB_OUTPUT
+
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -31,19 +34,21 @@ jobs:
           tags: |
             ${{ steps.meta.outputs.IMAGE }}:${{ steps.meta.outputs.TAG }}
             ${{ steps.meta.outputs.IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Add droplet to known_hosts
-        run: ssh-keyscan -H ${{ secrets.DROPLET_HOST }} >> ~/.ssh/known_hosts
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.DROPLET_HOST }}
           username: ${{ secrets.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
+          ssh-option: "-o StrictHostKeyChecking=no"
+          script_stop: true
           script: |
             set -e
             cd /srv/memory-vault
