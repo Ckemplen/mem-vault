@@ -1,8 +1,7 @@
-<!DOCTYPE html>
-<html>
-<body>
-  <h1>Home</h1>
+{% extends 'base.html' %}
+{% block title %}Home - Mem Vault{% endblock %}
+{% block content %}
+  <h1 class="page-title">Home</h1>
   <p>Welcome, {{ request.user.username }}!</p>
-  <a href="{% url 'logout' %}">Logout</a>
-</body>
-</html>
+  <a href="{% url 'logout' %}" class="btn">Logout</a>
+{% endblock %}
